@@ -1,0 +1,93 @@
+DENGUE MODEL
+
+Overview
+The proposed framework begins with data preprocessing, where missing values were handled to ensure the quality of the data.Feature engineering was then performed
+by grouping data on a weekly basis, and instead of keeping raw numbers, the total case counts turn into categorical risk levels (high, medium, low). A seasonal
+variable was derived from monthly data, and additional features such as hygiene ratio, rainfall lag (Lag-1), and a relational term between rainfall and humidity
+were generated to capture environmental effects. Categorical variables were encoded using one-hot and label encoding techniques. To address class imbalance, the
+Synthetic Minority Oversampling Technique (SMOTE) was applied. Finally, the dataset was split into training (70%) and testing (30%) sets, and logistic regression,
+decision tree, XGBoost, and random forest models were implemented for outbreak prediction.
+
+Technologies Used
+- Python
+- Scikit-learn
+- Pandas
+- NumPy
+-Sqlite3
+
+Dataset
+For dengue outbreak prediction, data is collected from three sites.
+1)	Integrated Disease Surveillance Programme Data (IDSP): IDSP provides weekly dengue case counts and sanitation reports by state from 2019 to 2025, essential for tracking disease spread.
+2)	Meteorological Data from Open-Meteo.com: Weekly weather data, including rainfall, humidity, and temperature, are used to analyze correlations with dengue incidence.
+3)	Sanitation Reports from Swachh Bharat Mission: Sanitation and cleanliness data from Swachh Bharat Mission-Gramin helps to understand how environmental factors influence dengue transmission.
+
+
+Dataset contains (900 rows):
+state
+week
+year
+rainfall
+humidity
+temperature
+WaterLogging_substantial_pc
+hygiene_total
+hygiene_ratio
+rainfall_x_humidity
+season_Post-Monsoon
+season_Summer
+season_Winter 
+
+
+Model Used
+-logistic regression
+- decision tree
+- XGBClassifier
+- Random Forest Classifier( best perform)
+
+Accuracy
+Random Forest- 0.85 (best perform)
+Decision tree-0.73
+XGBClassifier-0.71
+Logictic regression- 0.43
+ 
+Cross Validation
+-To evaluate the robustness and generalization capability of the model, multiple cross-validation techniques were applied.
+Standard Cross Validation
+A 10-fold cross-validation approach was used to evaluate the overall model performance.
+Result: 
+- Cross Validation Accuracy: 0.75
+
+K-Fold Cross Validation
+K-Fold Cross Validation was implemented by dividing the dataset into 10 folds. The model was trained on 9 folds and tested on the remaining fold iteratively to measure consistency in performance.
+
+Result:
+- Mean Accuracy with K-Folds: `0.758`
+
+Stratified K-Fold Cross Validation
+Stratified K-Fold Cross Validation was applied to maintain equal class distribution across all folds. This technique is especially useful for imbalanced datasets and provides a more reliable evaluation of the model.
+
+Result:
+- Mean CV Accuracy with Stratified K-Folds: `0.782`
+
+Purpose of Cross Validation
+These validation techniques help:
+- Reduce overfitting
+- Improve model reliability
+- Ensure consistent performance across different subsets of data
+- Measure the model’s generalization capability
+
+How to Run
+1. Install requirements
+2. Run app
+3.Enter the state and date for which you want the prediction.
+- Values for rainfall, humidity, and temperature for future dates are calculated by aggregating the previous 3 years of historical weather data based on the selected location using the Open-Meteo API.
+- Since the Open-Meteo API requires geographical coordinates (latitude and longitude), Nominatim OpenStreetMap API is used to fetch the coordinates of the entered location. These coordinates are then
+  passed to the Open-Meteo API because most weather APIs do not provide weather forecasts for dates more than 7 days ahead.
+- Values for WaterLogging_substantial_p, hygiene_total, and hygiene_ratio are fetched directly from the database, as these values are relatively static and do not require user input.
+
+After prediction, the newly entered data and prediction results are not stored in the database.
+
+
+Future Scope
+- Improve accuracy
+- real time analysis
